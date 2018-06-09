@@ -38,7 +38,7 @@ namespace GameDoMinXNA
             Win,
         }
         GameState CurrentGameState = GameState.MainMenu;
-        int x, y, fx = 10, fy = 10, count = 0;
+        int x, y, fx, fy, count = 0;
         Texture2D textureBackgournd;
         cButton btnPlay, btnHowToPlay, btnAbout, btnBack, btnHard, btnEasy, btnMedium, btnExit, btnLose, btnWin;
         cPlayer player;
@@ -61,14 +61,7 @@ namespace GameDoMinXNA
             IsMouseVisible = true;
             x = this.Window.ClientBounds.Width;
             y = this.Window.ClientBounds.Height;
-            for (int i = 1; i <= 10; i++)
-            {
-                for (int j = 1; j <= 10; j++)
-                {
-                    bState[i, j] = 1;
-                }
-            }
-
+           
             for (int i = 0; i < 11; i++)
             {
                 bState[i, 0] = 10;
@@ -301,7 +294,7 @@ namespace GameDoMinXNA
                     {
                         for (int j = 1; j <= 10; j++)
                         {
-                            Button[i, j].Draw(spriteBatch);
+                            Button1[i, j].Draw(spriteBatch);
                         }
                     }
                     player.Draw(spriteBatch);
@@ -330,12 +323,6 @@ namespace GameDoMinXNA
                     int count = 0;
                     if (bState[i, j] != -1)
                     {
-                        if (i == 10 && j == 10)
-                        {
-                            break;
-                        }
-                        else
-                        {
                             if (bState[i - 1, j - 1] == -1) count++;
                             if (bState[i - 1, j] == -1) count++;
                             if (bState[i - 1, j + 1] == -1) count++;
@@ -345,19 +332,17 @@ namespace GameDoMinXNA
                             if (bState[i + 1, j] == -1) count++;
                             if (bState[i + 1, j + 1] == -1) count++;
                             bState[i, j] = count;
-                        }
-
                     }
                 }
             }
-            bState[10, 10] = 100;
+            bState[fx, fy] = 100;
         }
         private void RandomBoom()
         {
-            while (count < 30) // random boom
+            while (count < 80) // random boom
             {
-                int i = rand.Next(1, 10), j = rand.Next(1, 10);
-                if (bState[i, j] == 1)
+                int i = rand.Next(1, 11), j = rand.Next(1, 11);
+                if (bState[i, j] == 0)
                 {
                     bState[i, j] = -1;
                     count++;
@@ -366,64 +351,101 @@ namespace GameDoMinXNA
         }
         private void FindAway()
         {
-            int a = 1;
-            int b = 1;
-            bState[1, 1] = 20;   
-            switch (rand.Next(1, 2)) // tìm đường đi đầu tiên
+            int empty;
+            do
             {
-                case 1:
-                    bState[1, 2] = 20;
-                    b = 2;
-                    break;
-                case 2:
-                    bState[2, 1] = 20;
-                    a = 2;
-                    break;
-                default:
-                    break;
-            }
-            while (bState[fx, fy] != 20)
-            {
-                int[] r = new int[5];
-                r[1] = 1;
-                r[2] = 2;
-                r[3] = 3;
-                r[4] = 4;
-                if (a == 1) r[3] = 0;
-                if (a == 10) r[1] = 0;
-                if (b == 1) r[4] = 0;
-                if (b == 10) r[2] = 0;
-
-                int t = rand.Next(1, 4);
-                while (r[t] == 0)
-                    t = rand.Next(1, 4);
-                switch (t)
+                for (int i = 1; i <= 10; i++)
+                {
+                    for (int j = 1; j <= 10; j++)
+                    {
+                        bState[i, j] = 0;
+                    }
+                }
+                fx = rand.Next(5, 11);
+                fy = rand.Next(5, 11);
+                int a = 1;
+                int b = 1;
+                bState[1, 1] = 20;
+                bState[1, 2] = 20;
+                bState[2, 1] = 20;
+                empty = 3;
+                switch (rand.Next(1, 3)) // tìm đường đi đầu tiên
                 {
                     case 1:
-                        bState[a + 1, b] = 20;
-                        //  ButtonTexture[a + 1, b] = tetu;
-                        a = a + 1;
+                        b = 2;
                         break;
                     case 2:
-                        bState[a, b + 1] = 20;
-
-                        //   ButtonTexture[a, b + 1] = tetu;
-                        b = b + 1;
-                        break;
-                    case 3:
-                        bState[a - 1, b] = 20;
-                        //   ButtonTexture[a - 1, b] = tetu;
-                        a = a - 1;
-                        break;
-                    case 4:
-                        bState[a, b - 1] = 20;
-                        // ButtonTexture[a, b - 1] = tetu;
-                        b = b - 1;
+                        a = 2;
                         break;
                     default:
                         break;
                 }
-            }
+                while (bState[fx, fy] != 20)
+                {
+                    int t = rand.Next(1, 7);
+                    int x;
+                    if( t==1 || t==2)
+                    {
+                        x = 1;
+                    }
+                    else if(t==3 || t==4)
+                    {
+                        x = 2;
+                    }
+                    else if (t==5)
+                    {
+                        x = 3;
+                    }
+                    else
+                    {
+                        x = 4;
+                    }
+                    if(a==1)
+                    {
+                        x = 1;
+                    }
+                    if(b==1)
+                    {
+                        x = 2;
+                    }
+                    if (a == fx)
+                    {
+                        x = 2;
+                    }
+                    if (b == fy)
+                    {
+                        x = 1;
+                    }
+                    switch (x)
+                    {
+                        case 1:
+                            bState[a + 1, b] = 20;
+                            //  ButtonTexture[a + 1, b] = tetu;
+                            a = a + 1;
+                            empty++;
+                            break;
+                        case 2:
+                            bState[a, b + 1] = 20;
+                            //   ButtonTexture[a, b + 1] = tetu;
+                            b = b + 1;
+                            empty++;
+                            break;
+                        case 3:
+                            bState[a - 1, b] = 20;
+                            a = a - 1;
+                            empty++;
+                            break;
+                        case 4:
+                            bState[a, b - 1] = 20;
+                            //   ButtonTexture[a, b + 1] = tetu;
+                            b = b - 1;
+                            empty++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+        } while (100 - empty < 80);
         }
         private void CheckCollision()
         {
@@ -435,7 +457,6 @@ namespace GameDoMinXNA
                     {
                         if (i == fx && j == fy)
                         {
-                            Button[i, j] = Button1[fx, fy];
                             for (int x = 1; x <= 10; x++)
                             {
                                 for (int y = 1; y <= 10; y++)
