@@ -36,10 +36,6 @@ namespace GameDoMinXNA
             LimitMove1 = newPosition;
             rectanglePlayer = new Rectangle(Position.X, Position.Y, (int)SizePlayer.X, (int)SizePlayer.Y);
         }
-        public void StartPosition(Point newPosition)
-        {
-            Position = newPosition;
-        }
         public bool getbound(Rectangle rect)
         {
             Point p1 = new Rectangle(Position.X, Position.Y, (int)SizePlayer.X, (int)SizePlayer.Y).Center;
